@@ -1,0 +1,36 @@
+<template>
+  <div class="auth">
+    <Navbar />
+    <div>
+      <h3 class="title">
+        Hello there!
+      </h3>
+      <AuthBlock />
+    </div>
+  </div>
+</template>
+
+<script>
+export default {}
+</script>
+
+<style>
+.auth {
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.title {
+  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  display: block;
+  font-weight: 300;
+  font-size: 40px;
+  color: #35495e;
+  letter-spacing: 1px;
+}
+</style>
