@@ -32,5 +32,8 @@ export default {}
   font-size: 40px;
   color: #35495e;
   letter-spacing: 1px;
+  text-decoration: gold solid overline;
+  margin-bottom: 20px;
 }
+
 </style>

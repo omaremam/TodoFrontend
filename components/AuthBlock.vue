@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 <template>
   <div class="authblock">
     <input v-model="email" class="infield" placeholder="Email">
@@ -7,10 +8,16 @@
       placeholder="Password"
       type="password"
     >
+    <input
+      v-show="isRegister"
+      v-model="name"
+      class="infield"
+      placeholder="Name"
+    >
     <button v-show="!isRegister" class="authbutton" @click="signIn()">
       Sign in
     </button>
-    <button v-show="isRegister" class="authbutton" @click="signIn()">
+    <button v-show="isRegister" class="authbutton" @click="register()">
       Register
     </button>
 
@@ -29,11 +36,9 @@ export default {
     return {
       email: '',
       password: '',
+      name: '',
       isRegister: false
     }
-  },
-  mounted () {
-    console.log('asdhasjb')
   },
   methods: {
     toggle () {
@@ -45,12 +50,52 @@ export default {
           email: this.email,
           password: this.password
         })
-        .then((res) => {
-          // TODO on success
+        .then((user) => {
+          sessionStorage.setItem('email', user.email)
+          sessionStorage.setItem('name', user.name)
+          sessionStorage.setItem('userType', user.userType)
+          sessionStorage.setItem('userid', user.id)
+          if (user.userType === 'REGULAR') {
+            this.$router.push({
+              path: '/todo/mainpage'
+            })
+          } else {
+            this.$router.push({
+              path: '/admin'
+            })
+          }
         })
         .catch((err) => {
-          // TODO on error
-          throw err
+          if (err.response.status === 409) {
+            sessionStorage.setItem('email', this.email)
+            sessionStorage.setItem('password', this.password)
+            this.$router.push({
+              path: '/emailconfirmation'
+            })
+          } else {
+            alert('Invalid email or password')
+          }
+          return true
+        })
+    },
+    async register () {
+      await this.$axios
+        .$post('/user/register', {
+          email: this.email,
+          password: this.password,
+          name: this.name,
+          userType: 'REGULAR'
+        })
+        .then((_) => {
+          sessionStorage.setItem('email', this.email)
+          sessionStorage.setItem('name', this.name)
+          sessionStorage.setItem('password', this.password)
+          this.$router.push({
+            path: '/emailconfirmation'
+          })
+        })
+        .catch((err) => {
+          alert(err.response.data.errors[0])
         })
     }
   }
@@ -68,7 +113,7 @@ a:hover {
   justify-content: center;
   align-content: center;
   width: 40vw;
-  height: 50vh;
+  height: 60vh;
   background-color: #f5f5f5;
   margin: 30px;
   border-radius: 20px;
@@ -88,6 +133,7 @@ a:hover {
 .authbutton:hover {
   background-color: white;
   color: black;
+  cursor: pointer;
 }
 
 .infield {
